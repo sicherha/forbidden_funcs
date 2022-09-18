@@ -26,9 +26,10 @@ This will install `forbidden_func_check.so` into GCC's plugin directory, i.e.
 ## Using the plugin
 The plugin takes a comma-separated list of symbols as a named argument called
 `list`.
-So, to ban the use of `sprintf()` and `system()`, add the following flags to
-GCC's command line (mind the underscores and dashes):
+For example, to ban the use of `sprintf()` and `system()`, add the following
+flags to GCC's command line (mind the underscores and dashes):
 
 ```
 -fplugin=forbidden_func_check -fplugin-arg-forbidden_func_check-list=sprintf,system
 ```
+To include a C++ function or method, use its mangled symbol name.
