@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# forbidden_func_check - a GCC plugin checking for calls to forbidden functions
+# forbidden_funcs - a GCC plugin checking for calls to forbidden functions
 # Copyright (C) 2022  Christoph Erhardt
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,23 +22,23 @@ BASEDIR=$(cd "$(dirname "$0")" && pwd)
 
 GCC_CALL=(gcc -Wall -Werror -o /dev/null -c "$BASEDIR/test.c")
 GCC_CALL_PLUGIN=("${GCC_CALL[@]}" \
-  -fplugin="$BASEDIR/../forbidden_func_check.so")
+  -fplugin="$BASEDIR/../forbidden_funcs.so")
 
 # Sanity check: Call without plugin
 "${GCC_CALL[@]}"
 
 # Call to `sprintf()` should cause a compiler error
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_func_check-list=sprintf && exit 1
+"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf && exit 1
 
 # No call to `printf()` in the code -> no error
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_func_check-list=printf
+"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=printf
 
 # Calls to `sprintf()` and `strcat()` should cause a compiler error
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_func_check-list=sprintf,strcat \
+"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf,strcat \
   && exit 1
 
 # `-Wno-error=deprecated` should cause the compilation not to fail
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_func_check-list=sprintf,strcat \
+"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf,strcat \
   -Wno-error=deprecated
 
 echo 'All tests successful.'

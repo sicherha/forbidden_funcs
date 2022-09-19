@@ -1,4 +1,4 @@
-# forbidden_func_check - a GCC plugin checking for calls to forbidden functions
+# forbidden_funcs - a GCC plugin checking for calls to forbidden functions
 # Copyright (C) 2022  Christoph Erhardt
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ CXXFLAGS += -fno-rtti -fPIC
 
 .PHONY: all clean check install
 
-all: forbidden_func_check.so
+all: forbidden_funcs.so
 
 clean:
-	${RM} forbidden_func_check.so *.o
+	${RM} forbidden_funcs.so *.o
 
-check: forbidden_func_check.so
+check: forbidden_funcs.so
 	test/test.sh
 
 install: all
-	install forbidden_func_check.so "${GCC_PLUGIN_PATH}"
+	install forbidden_funcs.so "${GCC_PLUGIN_PATH}"
 
-forbidden_func_check.so: forbidden_func_check.o
+forbidden_funcs.so: forbidden_funcs.o
 	${CXX} -o $@ -shared ${CXXFLAGS} $^

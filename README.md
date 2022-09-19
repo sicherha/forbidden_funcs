@@ -20,7 +20,7 @@ make
 ```sh
 sudo make install
 ```
-This will install `forbidden_func_check.so` into GCC's plugin directory, i.e.
+This will install `forbidden_funcs.so` into GCC's plugin directory, i.e.
 `/usr/lib/gcc/<target>/<version>/plugin`.
 
 ## Using the plugin
@@ -30,6 +30,6 @@ For example, to ban the use of `sprintf()` and `system()`, add the following
 flags to GCC's command line (mind the underscores and dashes):
 
 ```
--fplugin=forbidden_func_check -fplugin-arg-forbidden_func_check-list=sprintf,system
+-fplugin=forbidden_funcs -fplugin-arg-forbidden_funcs-list=sprintf,system
 ```
 To include a C++ function or method, use its mangled symbol name.

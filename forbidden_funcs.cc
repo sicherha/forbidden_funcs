@@ -1,4 +1,4 @@
-// forbidden_func_check - a GCC plugin checking for calls to forbidden functions
+// forbidden_funcs - a GCC plugin checking for calls to forbidden functions
 // Copyright (C) 2022  Christoph Erhardt
 //
 // This program is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ plugin_info pluginInfo = {
     .help =
         "Treats calls to forbidden functions as `-Wdeprecated`.\n"
         "Pass a comma-separated list of (mangled) symbols as argument, e.g.\n"
-        "  `-fplugin-arg-forbidden_func_check-list=func1,func2,func3`.",
+        "  `-fplugin-arg-forbidden_funcs-list=func1,func2,func3`.",
 };
 
 template <char S>
@@ -82,7 +82,7 @@ std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
 
 constexpr pass_data passData = {
     .type = GIMPLE_PASS,
-    .name = "forbidden_func_check",
+    .name = "forbidden_funcs",
     .optinfo_flags = OPTGROUP_NONE,
     .tv_id = TV_NONE,
     .properties_required = PROP_gimple_any,
