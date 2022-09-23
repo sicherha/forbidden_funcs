@@ -148,7 +148,7 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
     register_callback(
         nameArgs->base_name,
         PLUGIN_FINISH,
-        [](void* gccData [[maybe_unused]], void* userData) {
+        [](void*, void* userData) {
           delete static_cast<ForbiddenFunctionCheck*>(userData);
         },
         pass);
