@@ -31,7 +31,8 @@ check: forbidden_funcs.so
 	test/test.sh
 
 install: all
-	install forbidden_funcs.so "${GCC_PLUGIN_PATH}"
+	mkdir -p "${DESTDIR}${GCC_PLUGIN_PATH}"
+	install forbidden_funcs.so "${DESTDIR}${GCC_PLUGIN_PATH}"
 
 forbidden_funcs.so: forbidden_funcs.o
 	${CXX} -o $@ -shared ${CXXFLAGS} ${LDFLAGS} $^
