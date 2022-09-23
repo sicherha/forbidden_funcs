@@ -14,9 +14,17 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
+#include <iostream>
+#include <sstream>
+#include <unordered_set>
+#include <vector>
+
 // clang-format off
 #include <gcc-plugin.h>
+#include <basic-block.h>
 #include <tree.h>
+#include <tree-ssa-alias.h>
+#include <gimple-expr.h>
 #include <gimple.h>
 // clang-format on
 
@@ -24,13 +32,7 @@
 #include <diagnostic-core.h>
 #include <gimple-iterator.h>
 #include <plugin-version.h>
-#include <system.h>
 #include <tree-pass.h>
-
-#include <iostream>
-#include <sstream>
-#include <unordered_set>
-#include <vector>
 
 namespace {
 
