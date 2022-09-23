@@ -34,4 +34,4 @@ install: all
 	install forbidden_funcs.so "${GCC_PLUGIN_PATH}"
 
 forbidden_funcs.so: forbidden_funcs.o
-	${CXX} -o $@ -shared ${CXXFLAGS} $^
+	${CXX} -o $@ -shared ${CXXFLAGS} ${LDFLAGS} $^
