@@ -6,7 +6,7 @@ as `sprintf()` or `system()`.
 ## Building the plugin
 You need the following prerequisites:
 
-* GCC >= 5, with C++ support
+* GCC >= 5, with C++ support and plugin-development headers
 * Make
 * Bash (for running the unit tests)
 
