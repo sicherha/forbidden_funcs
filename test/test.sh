@@ -28,17 +28,20 @@ GCC_CALL_PLUGIN=("${GCC_CALL[@]}" \
 "${GCC_CALL[@]}"
 
 # Call to `sprintf()` should cause a compiler error
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf && exit 1
+"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf 2> /dev/null \
+  && exit 1
 
 # No call to `printf()` in the code -> no error
 "${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=printf
 
 # Calls to `sprintf()` and `strcat()` should cause a compiler error
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf,strcat \
+"${GCC_CALL_PLUGIN[@]}" \
+  -fplugin-arg-forbidden_funcs-list=sprintf,strcat 2> /dev/null \
   && exit 1
 
 # `-Wno-error=deprecated` should cause the compilation not to fail
-"${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf,strcat \
-  -Wno-error=deprecated
+"${GCC_CALL_PLUGIN[@]}" \
+  -fplugin-arg-forbidden_funcs-list=sprintf,strcat -Wno-error=deprecated \
+  2> /dev/null
 
 echo 'All tests successful.'
