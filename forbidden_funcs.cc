@@ -14,8 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-#include <iostream>
-#include <sstream>
+#include <string>
 #include <unordered_set>
 
 // clang-format off
@@ -167,9 +166,11 @@ int plugin_is_GPL_compatible;
 int plugin_init(plugin_name_args* nameArgs, plugin_gcc_version* version) {
   // Check version
   if (!plugin_default_version_check(version, &gcc_version)) {
-    std::cerr << "Plugin " << nameArgs->base_name
-              << " was built for GCC version " << GCCPLUGIN_VERSION_MAJOR << '.'
-              << GCCPLUGIN_VERSION_MINOR << std::endl;
+    fprintf(stderr,
+            "Plugin %s was built for GCC version %d.%d\n",
+            nameArgs->base_name,
+            GCCPLUGIN_VERSION_MAJOR,
+            GCCPLUGIN_VERSION_MINOR);
     return 1;
   }
 
