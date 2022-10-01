@@ -89,13 +89,12 @@ constexpr pass_data passData = {
 };
 
 class ForbiddenFunctionCheck final : public gimple_opt_pass {
- protected:
+ private:
   ForbiddenFunctionCheck(gcc::context* ctx,
                          std::unordered_set<std::string> forbiddenFuncs)
       : gimple_opt_pass(passData, ctx),
         m_forbiddenFuncs(std::move(forbiddenFuncs)) {}
 
- public:
   unsigned execute(function* function) override {
     basic_block bb;
     FOR_ALL_BB_FN(bb, function) {
@@ -123,6 +122,7 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
     return 0;
   }
 
+ public:
   static void createAndRegister(
       gcc::context* ctx,
       const std::unordered_set<std::string>& forbiddenFuncs,
