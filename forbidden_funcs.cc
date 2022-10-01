@@ -17,7 +17,6 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_set>
-#include <vector>
 
 // clang-format off
 #include <gcc-plugin.h>
@@ -44,19 +43,15 @@ plugin_info pluginInfo = {
         "  `-fplugin-arg-forbidden_funcs-list=func1,func2,func3`.",
 };
 
-template <char S>
-std::vector<std::string> splitStringAt(const std::string& string) {
-  std::vector<std::string> items;
-
-  std::istringstream stream(string);
+void extractCommaSeparatedItems(std::unordered_set<std::string>& outSet,
+                                const std::string& inString) {
+  std::istringstream stream(inString);
   std::string item;
-  while (std::getline(stream, item, S)) {
+  while (std::getline(stream, item, ',')) {
     if (!item.empty()) {
-      items.push_back(item);
+      outSet.insert(item);
     }
   }
-
-  return items;
 }
 
 std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
@@ -66,8 +61,7 @@ std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
     const auto& arg = nameArgs->argv[i];
 
     if (strcmp(arg.key, "list") == 0 && arg.value) {
-      const auto items = splitStringAt<','>(arg.value);
-      forbiddenFuncs.insert(items.begin(), items.end());
+      extractCommaSeparatedItems(forbiddenFuncs, arg.value);
       continue;
     }
 
