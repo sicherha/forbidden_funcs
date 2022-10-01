@@ -44,13 +44,19 @@ plugin_info pluginInfo = {
 };
 
 void extractCommaSeparatedItems(std::unordered_set<std::string>& outSet,
-                                const std::string& inString) {
-  std::istringstream stream(inString);
-  std::string item;
-  while (std::getline(stream, item, ',')) {
-    if (!item.empty()) {
-      outSet.insert(item);
+                                const char inString[]) {
+  const char* start = inString;
+  const char* end;
+  for (end = start; *end != '\0'; ++end) {
+    if (*end == ',') {
+      if (end - start > 0) {
+        outSet.insert(std::string(start, end));
+      }
+      start = end + 1;
     }
+  }
+  if (end - start > 0) {
+    outSet.insert(std::string(start, end));
   }
 }
 
