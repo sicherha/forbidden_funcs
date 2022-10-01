@@ -29,7 +29,7 @@ GCC_CALL_PLUGIN=("${GCC_CALL[@]}" \
 
 # Call to `sprintf()` should cause a compiler error
 "${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=sprintf 2> /dev/null \
-  && exit 1
+  && (echo 'Expected compiler error for sprintf'; exit 1)
 
 # No call to `printf()` in the code -> no error
 "${GCC_CALL_PLUGIN[@]}" -fplugin-arg-forbidden_funcs-list=printf
@@ -37,7 +37,7 @@ GCC_CALL_PLUGIN=("${GCC_CALL[@]}" \
 # Calls to `sprintf()` and `strcat()` should cause a compiler error
 "${GCC_CALL_PLUGIN[@]}" \
   -fplugin-arg-forbidden_funcs-list=sprintf,strcat 2> /dev/null \
-  && exit 1
+  && (echo 'Expected compiler error for sprintf/strcat'; exit 1)
 
 # `-Wno-error=deprecated` should cause the compilation not to fail
 "${GCC_CALL_PLUGIN[@]}" \
