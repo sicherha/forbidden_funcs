@@ -20,12 +20,15 @@ CPPFLAGS += "-I${GCC_PLUGIN_PATH}/include"
 CXXFLAGS ?= -O2 -Wall -Wextra
 CXXFLAGS += -std=c++14 -fno-rtti -fPIC
 
-.PHONY: all clean check install
+.PHONY: all clean format check install
 
 all: forbidden_funcs.so
 
 clean:
 	${RM} forbidden_funcs.so *.o
+
+format:
+	clang-format -i *.cc test/*.c
 
 check: forbidden_funcs.so
 	test/test.sh
