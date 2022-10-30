@@ -39,6 +39,11 @@ GCC_CALL_PLUGIN=("${GCC_CALL[@]}" \
   -fplugin-arg-forbidden_funcs-list=sprintf,strcat 2> /dev/null \
   && (echo 'Expected compiler error for sprintf/strcat'; exit 1)
 
+# Taking the address of `system()`should cause a compiler error
+"${GCC_CALL_PLUGIN[@]}" \
+  -fplugin-arg-forbidden_funcs-list=system 2> /dev/null \
+  && (echo 'Expected compiler error for system'; exit 1)
+
 # `-Wno-error=deprecated` should cause the compilation not to fail
 "${GCC_CALL_PLUGIN[@]}" \
   -fplugin-arg-forbidden_funcs-list=sprintf,strcat -Wno-error=deprecated \

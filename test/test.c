@@ -15,6 +15,7 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 void legalCall(void) {
@@ -39,4 +40,9 @@ void anotherIllegalCall(const char message[]) {
 int callWithoutDeclaration(int (*func)(int)) {
   // Calls to function pointers do not have an associated declaration
   return func(42);
+}
+
+int (*useOfFunctionPointer(void))(const char[]) {
+  // `system()` is dangerous
+  return system;
 }
