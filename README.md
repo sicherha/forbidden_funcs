@@ -33,3 +33,10 @@ flags to GCC's command line (mind the underscores and dashes):
 -fplugin=forbidden_funcs -fplugin-arg-forbidden_funcs-list=sprintf,system
 ```
 To include a C++ function or method, use its mangled symbol name.
+
+### Use with icecream
+To make proper use of the plugin in an icecream parallel-build setup:
+
+* Ensure that `forbidden_funcs.so` and its dependencies (`libgcc_s.so.1` and
+  `libstdc++.so.6`) are included in the build-environment tarball.
+* Pass the plugin's **absolute path** as the `-fplugin=` argument.
