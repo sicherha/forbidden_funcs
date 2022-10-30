@@ -29,6 +29,7 @@
 #include <context.h>
 #include <diagnostic-core.h>
 #include <gimple-iterator.h>
+#include <gimple-walk.h>
 #include <plugin-version.h>
 #include <tree-pass.h>
 
@@ -103,26 +104,19 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
   unsigned execute(function* function) override {
     basic_block bb;
     FOR_ALL_BB_FN(bb, function) {
-      for (auto gsi = gsi_start_bb(bb); !gsi_end_p(gsi); gsi_next(&gsi)) {
-        const auto* statement = gsi_stmt(gsi);
-        if (gimple_code(statement) != GIMPLE_CALL) {
-          continue;
-        }
-        const auto callee = gimple_call_fndecl(statement);
-        if (!callee) {
-          continue;
-        }
-        const auto* calleeSymbol =
-            IDENTIFIER_POINTER(DECL_ASSEMBLER_NAME(callee));
-        if (m_forbiddenFuncs.find(calleeSymbol) == m_forbiddenFuncs.end()) {
-          continue;
-        }
+      walk_stmt_info info{};
+      info.info = this;
 
-        warning_at(gimple_location(statement),
-                   OPT_Wdeprecated,
-                   "call to forbidden function %qD",
-                   callee);
-      }
+      walk_gimple_seq(
+          bb_seq(bb),
+          nullptr,
+          [](tree* op, int*, void* arg) {
+            const auto* info = static_cast<walk_stmt_info*>(arg);
+            const auto* pass = static_cast<ForbiddenFunctionCheck*>(info->info);
+            pass->check(info->stmt, *op);
+            return NULL_TREE;
+          },
+          &info);
     }
     return 0;
   }
@@ -138,7 +132,7 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
     // Register it
     register_pass_info passInfo = {
         .pass = pass,
-        .reference_pass_name = "ssa",
+        .reference_pass_name = "cfg",
         .ref_pass_instance_number = 1,
         .pos_op = PASS_POS_INSERT_AFTER,
     };
@@ -153,6 +147,39 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
           delete static_cast<ForbiddenFunctionCheck*>(userData);
         },
         pass);
+  }
+
+ private:
+  void check(const gimple* statement, tree op) const {
+    if (isFunctionDeclaration(op) && isForbidden(getSymbol(op))) {
+      showWarning(isCallTo(statement, op) ? "call to forbidden function %qD"
+                                          : "use of forbidden function %qD",
+                  statement,
+                  op);
+    }
+  }
+
+  static bool isFunctionDeclaration(tree op) {
+    return (DECL_P(op) && TREE_CODE(op) == FUNCTION_DECL);
+  }
+
+  static const char* getSymbol(tree decl) {
+    return IDENTIFIER_POINTER(DECL_ASSEMBLER_NAME(decl));
+  }
+
+  bool isForbidden(const std::string& symbol) const {
+    return (m_forbiddenFuncs.find(symbol) != m_forbiddenFuncs.end());
+  }
+
+  static bool isCallTo(const gimple* statement, tree funcDecl) {
+    return (gimple_code(statement) == GIMPLE_CALL &&
+            gimple_call_fndecl(statement) == funcDecl);
+  }
+
+  static void showWarning(const char message[],
+                          const gimple* statement,
+                          tree funcDecl) {
+    warning_at(gimple_location(statement), OPT_Wdeprecated, message, funcDecl);
   }
 
  private:
