@@ -113,7 +113,7 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
           [](tree* op, int*, void* arg) {
             const auto* info = static_cast<walk_stmt_info*>(arg);
             const auto* pass = static_cast<ForbiddenFunctionCheck*>(info->info);
-            pass->check(info->stmt, *op);
+            pass->check(gsi_stmt(info->gsi), *op);
             return NULL_TREE;
           },
           &info);
@@ -150,7 +150,14 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
   }
 
  private:
-  void check(const gimple* statement, tree op) const {
+   // GCC 6 changed its interfaces to use `gimple*` instead of `gimple`.
+#if GCCPLUGIN_VERSION_MAJOR >= 6
+   using Gimple = const gimple*;
+#else
+   using Gimple = gimple;
+#endif
+
+  void check(Gimple statement, tree op) const {
     if (isFunctionDeclaration(op) && isForbidden(getSymbol(op))) {
       showWarning(isCallTo(statement, op) ? "call to forbidden function %qD"
                                           : "use of forbidden function %qD",
@@ -171,13 +178,13 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
     return (m_forbiddenFuncs.find(symbol) != m_forbiddenFuncs.end());
   }
 
-  static bool isCallTo(const gimple* statement, tree funcDecl) {
+  static bool isCallTo(Gimple statement, tree funcDecl) {
     return (gimple_code(statement) == GIMPLE_CALL &&
             gimple_call_fndecl(statement) == funcDecl);
   }
 
   static void showWarning(const char message[],
-                          const gimple* statement,
+                          Gimple statement,
                           tree funcDecl) {
     warning_at(gimple_location(statement), OPT_Wdeprecated, message, funcDecl);
   }
