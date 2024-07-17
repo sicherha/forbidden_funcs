@@ -18,7 +18,8 @@ GCC_PLUGIN_PATH := $(shell ${CXX} -print-file-name=plugin)
 
 CPPFLAGS += "-I${GCC_PLUGIN_PATH}/include"
 CXXFLAGS ?= -O2 -Wall -Wextra
-CXXFLAGS += -std=c++14 -fno-rtti -fPIC
+CXXFLAGS += -std=c++14 -fno-rtti -fPIC \
+            -fvisibility=hidden -fvisibility-inlines-hidden
 
 .PHONY: all clean format check install
 

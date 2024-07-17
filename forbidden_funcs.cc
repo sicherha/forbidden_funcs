@@ -33,6 +33,8 @@
 #include <plugin-version.h>
 #include <tree-pass.h>
 
+#define DLL_PUBLIC __attribute__((visibility("default")))
+
 namespace {
 
 plugin_info pluginInfo = {
@@ -195,7 +197,10 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
 
 }  // namespace
 
-int plugin_is_GPL_compatible;
+int plugin_is_GPL_compatible DLL_PUBLIC;
+
+int plugin_init(plugin_name_args* nameArgs,
+                plugin_gcc_version* version) DLL_PUBLIC;
 
 int plugin_init(plugin_name_args* nameArgs, plugin_gcc_version* version) {
   // Check version
