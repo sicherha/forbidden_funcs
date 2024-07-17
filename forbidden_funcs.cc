@@ -152,11 +152,11 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
   }
 
  private:
-   // GCC 6 changed its interfaces to use `gimple*` instead of `gimple`.
+  // GCC 6 changed its interfaces to use `gimple*` instead of `gimple`.
 #if GCCPLUGIN_VERSION_MAJOR >= 6
-   using Gimple = const gimple*;
+  using Gimple = const gimple*;
 #else
-   using Gimple = gimple;
+  using Gimple = gimple;
 #endif
 
   void check(Gimple statement, tree op) const {
