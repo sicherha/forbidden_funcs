@@ -27,7 +27,7 @@ LDFLAGS += -Wl,--as-needed -Wl,-Bsymbolic-functions
 all: forbidden_funcs.so
 
 clean:
-	${RM} forbidden_funcs.so *.o
+	${RM} compile_commands.json forbidden_funcs.so *.o
 
 format:
 	clang-format -i *.cc test/*.c
@@ -38,6 +38,9 @@ check: forbidden_funcs.so
 install: all
 	mkdir -p "${DESTDIR}${GCC_PLUGIN_PATH}"
 	install forbidden_funcs.so "${DESTDIR}${GCC_PLUGIN_PATH}"
+
+compile_commands.json: Makefile
+	bear -- ${MAKE} -B
 
 forbidden_funcs.so: forbidden_funcs.o
 	${CXX} -o $@ -shared ${CXXFLAGS} ${LDFLAGS} $^
