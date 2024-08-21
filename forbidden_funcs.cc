@@ -71,7 +71,7 @@ std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
   for (int i = 0; i < nameArgs->argc; ++i) {
     const auto& arg = nameArgs->argv[i];
 
-    if (strcmp(arg.key, "list") == 0 && arg.value) {
+    if (std::strcmp(arg.key, "list") == 0 && arg.value) {
       extractCommaSeparatedItems(forbiddenFuncs, arg.value);
       continue;
     }
@@ -208,11 +208,11 @@ int plugin_init(plugin_name_args* nameArgs,
 int plugin_init(plugin_name_args* nameArgs, plugin_gcc_version* version) {
   // Check version
   if (!plugin_default_version_check(version, &gcc_version)) {
-    fprintf(stderr,
-            "Plugin %s was built for GCC version %d.%d\n",
-            nameArgs->base_name,
-            GCCPLUGIN_VERSION_MAJOR,
-            GCCPLUGIN_VERSION_MINOR);
+    std::fprintf(stderr,
+                 "Plugin %s was built for GCC version %d.%d\n",
+                 nameArgs->base_name,
+                 GCCPLUGIN_VERSION_MAJOR,
+                 GCCPLUGIN_VERSION_MINOR);
     return 1;
   }
 
