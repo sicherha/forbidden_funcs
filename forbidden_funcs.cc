@@ -52,13 +52,13 @@ void extractCommaSeparatedItems(std::unordered_set<std::string>& outSet,
   for (end = start; *end != '\0'; ++end) {
     if (*end == ',') {
       if (end - start > 0) {
-        outSet.insert(std::string(start, end));
+        outSet.emplace(start, end);
       }
       start = end + 1;
     }
   }
   if (end - start > 0) {
-    outSet.insert(std::string(start, end));
+    outSet.emplace(start, end);
   }
 }
 
