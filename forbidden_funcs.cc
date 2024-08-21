@@ -71,7 +71,7 @@ std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
   for (int i = 0; i < nameArgs->argc; ++i) {
     const auto& arg = nameArgs->argv[i];
 
-    if (std::strcmp(arg.key, "list") == 0 && arg.value) {
+    if (std::strcmp(arg.key, "list") == 0 && arg.value != nullptr) {
       extractCommaSeparatedItems(forbiddenFuncs, arg.value);
       continue;
     }
@@ -80,7 +80,7 @@ std::unordered_set<std::string> parseArgs(const plugin_name_args* nameArgs) {
         "unrecognized command-line option %<-%s%s%> for plugin %s; "
         "did you mean %<-list=%>?",
         arg.key,
-        arg.value ? "=" : "",
+        (arg.value != nullptr) ? "=" : "",
         nameArgs->base_name);
   }
 
