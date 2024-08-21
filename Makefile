@@ -20,7 +20,7 @@ CPPFLAGS += "-I${GCC_PLUGIN_PATH}/include"
 CXXFLAGS ?= -O2 -Wall -Wextra
 CXXFLAGS += -std=c++14 -fno-rtti -fPIC \
             -fvisibility=hidden -fvisibility-inlines-hidden
-LDFLAGS += -Wl,--as-needed
+LDFLAGS += -Wl,--as-needed -Wl,-Bsymbolic-functions
 
 .PHONY: all clean format check install
 
