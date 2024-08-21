@@ -128,9 +128,9 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
 
  public:
   static void createAndRegister(
+      const char* pluginName,
       gcc::context* ctx,
-      const std::unordered_set<std::string>& forbiddenFuncs,
-      const plugin_name_args* nameArgs) {
+      const std::unordered_set<std::string>& forbiddenFuncs) {
     // Create the pass
     auto* pass = new ForbiddenFunctionCheck(ctx, forbiddenFuncs);
 
@@ -142,11 +142,11 @@ class ForbiddenFunctionCheck final : public gimple_opt_pass {
         .pos_op = PASS_POS_INSERT_AFTER,
     };
     register_callback(
-        nameArgs->base_name, PLUGIN_PASS_MANAGER_SETUP, nullptr, &passInfo);
+        pluginName, PLUGIN_PASS_MANAGER_SETUP, nullptr, &passInfo);
 
     // Ensure proper destruction on shutdown
     register_callback(
-        nameArgs->base_name,
+        pluginName,
         PLUGIN_FINISH,
         [](void*, void* userData) {
           delete static_cast<ForbiddenFunctionCheck*>(userData);
@@ -221,7 +221,8 @@ int plugin_init(plugin_name_args* nameArgs, plugin_gcc_version* version) {
 
   // Create and register analysis pass
   const auto forbiddenFuncs = parseArgs(nameArgs);
-  ForbiddenFunctionCheck::createAndRegister(g, forbiddenFuncs, nameArgs);
+  ForbiddenFunctionCheck::createAndRegister(
+      nameArgs->base_name, g, forbiddenFuncs);
 
   return 0;
 }
