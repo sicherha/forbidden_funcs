@@ -17,7 +17,7 @@
 GCC_PLUGIN_PATH := $(shell ${CXX} -print-file-name=plugin)
 
 CPPFLAGS += "-I${GCC_PLUGIN_PATH}/include"
-CXXFLAGS ?= -O2 -Wall -Wextra
+CXXFLAGS ?= -flto -O2 -Wall -Wextra
 CXXFLAGS += -std=c++14 -fno-rtti -fPIC \
             -fvisibility=hidden -fvisibility-inlines-hidden
 LDFLAGS += -Wl,--as-needed -Wl,-Bsymbolic-functions
